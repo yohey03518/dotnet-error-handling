@@ -7,7 +7,6 @@ Examples of error handling patterns in .NET applications
 - Uses **Middleware** for application-wide error handling
 - Provides consistent error responses
 - Centralizes unhandled exceptions logging
-- Uses **ProblemDetails** for error response format
 
 ### API Level
 #### Controller-based API

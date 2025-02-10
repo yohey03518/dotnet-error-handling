@@ -2,23 +2,18 @@
 using System.Text.Json;
 using Api;
 
-public class GlobalErrorHandler
+public class GlobalErrorHandler(RequestDelegate next, ILogger<GlobalErrorHandler> logger)
 {
-    private readonly RequestDelegate _next;
-
-    public GlobalErrorHandler(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "An unhandled exception occurred");
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
