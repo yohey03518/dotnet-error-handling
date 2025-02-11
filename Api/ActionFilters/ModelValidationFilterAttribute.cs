@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Api.ActionFilters;
 
-public class ModelValidationActionFilter : IAsyncActionFilter
+public class ModelValidationFilterAttribute : IAsyncActionFilter
 {
     public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -15,10 +15,10 @@ public class ModelValidationActionFilter : IAsyncActionFilter
                 .ToList();
 
             var response = BaseResponse.ValidateFail(string.Join(",", errors));
-            context.Result = new OkObjectResult(response);
+            context.Result = new BadRequestObjectResult(response);
             return Task.CompletedTask;
         }
 
         return next();
     }
-} 
+}

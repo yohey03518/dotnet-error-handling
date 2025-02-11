@@ -44,3 +44,25 @@ Content-Type: application/json
         }
     ]
 } 
+
+### Validation in Exception Filter
+POST {{baseUrl}}/api/order/exception-filter
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "paymentMethod": "Credit Card",
+  "address": "123121St",
+  "products": [
+    {
+      "id": 1,
+      "amount": 2,
+      "price": 29.99
+    },
+    {
+      "id": 2,
+      "amount": 1,
+      "price": 49.99
+    }
+  ]
+} 

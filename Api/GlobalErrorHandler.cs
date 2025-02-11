@@ -19,17 +19,16 @@ public class GlobalErrorHandler(RequestDelegate next, ILogger<GlobalErrorHandler
         catch (Exception ex)
         {
             logger.LogError(ex, "An unhandled exception occurred");
-
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             var response = new BaseResponse
             {
                 IsSuccess = false,
-                Message = "Internal Server Error"
+                Message = "Unexpected Error Occurred"
             };
 
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response)); 
         }
     }
 }

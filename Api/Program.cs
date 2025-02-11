@@ -8,8 +8,13 @@ using Castle.DynamicProxy;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<UserApiExceptionFilterAttribute>();
-builder.Services.AddScoped<ModelValidationActionFilter>();
+builder.Services.AddScoped<PlaceOrderExceptionFilterAttribute>();
+builder.Services.AddScoped<ModelValidationFilterAttribute>();
+builder.Services.AddScoped<ValidationFailFilterAttribute>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IPaymentProxy, PaymentProxy>();
+builder.Services.AddScoped<IShippingService, ShippingService>();
 
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserPaymentTransactionRepository, UserPaymentTransactionRepository>();

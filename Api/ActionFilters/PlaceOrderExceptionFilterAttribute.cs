@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Api.ActionFilters;
 
-public class UserApiExceptionFilterAttribute(ILogger<UserApiExceptionFilterAttribute> logger) : ExceptionFilterAttribute
+public class PlaceOrderExceptionFilterAttribute(ILogger<PlaceOrderExceptionFilterAttribute> logger) : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
     {

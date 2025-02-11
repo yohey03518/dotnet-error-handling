@@ -5,7 +5,6 @@ using Api.Services;
 
 namespace Api.Controllers;
 
-[ServiceFilter(typeof(UserApiExceptionFilterAttribute))]
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {

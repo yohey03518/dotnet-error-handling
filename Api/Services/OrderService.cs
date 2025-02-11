@@ -1,0 +1,93 @@
+﻿using Api.Controllers;
+using Api.Repositories;
+
+namespace Api.Services;
+
+public class OrderService(
+    IOrderRepository orderRepository,
+    IPaymentProxy paymentProxy,
+    IShippingService shippingService,
+    ILogger<OrderService> logger)
+{
+    public async Task PlaceOrder(PlaceOrderRequest request)
+    {
+        var totalAmount = request.Products.Sum(p => p.Price * p.Amount);
+
+        await orderRepository.CreateOrder(request);
+        await paymentProxy.ProcessPayment(request.UserId, request.PaymentMethod, totalAmount);
+        await shippingService.ShipOrder(request.UserId, request.Address, request.Products);
+    }
+    
+    public async Task PlaceOrderWithFailHandle1(PlaceOrderRequest request)
+    {
+        var totalAmount = request.Products.Sum(p => p.Price * p.Amount);
+
+        var orderId = await orderRepository.CreateOrder(request);
+
+        try
+        {
+            await paymentProxy.ProcessPayment(request.UserId, request.PaymentMethod, totalAmount);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentSucceeded);
+        }
+        catch (Exception)
+        {
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
+            // throw e; // should not throw by this way to prevent stack trace missing
+            // if the exception has been thrown, no need to log here
+            throw;
+        }
+
+        try
+        {
+            await shippingService.ShipOrder(request.UserId, request.Address, request.Products);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.Shipping);
+        }
+        catch (Exception)
+        {
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
+            throw;
+        }
+    }
+    
+    public async Task PlaceOrderWithFailHandleResultPattern(PlaceOrderRequest request)
+    {
+        var totalAmount = request.Products.Sum(p => p.Price * p.Amount);
+
+        var orderId = await orderRepository.CreateOrder(request);
+
+        try
+        {
+            await paymentProxy.ProcessPayment(request.UserId, request.PaymentMethod, totalAmount);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentSucceeded);
+        }
+        catch (Exception)
+        {
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
+            // throw e; // should not throw by this way to prevent stack trace missing
+            // if the exception has been thrown, no need to log here
+            throw;
+        }
+
+        try
+        {
+            await shippingService.ShipOrder(request.UserId, request.Address, request.Products);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.Shipping);
+        }
+        catch (Exception)
+        {
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
+            throw;
+        }
+    }
+}
+
+public enum OrderStatus
+{
+    Unknown = 0,
+    New = 1,
+    Completed = 2,
+    PaymentFailed = 3,
+    PaymentSucceeded = 4,
+    ShippingRequestFail = 5,
+    Shipping = 6,
+}
