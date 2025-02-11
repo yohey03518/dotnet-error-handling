@@ -1,4 +1,5 @@
-﻿using Api.Controllers;
+﻿using Api.Common;
+using Api.Controllers;
 using Api.Repositories;
 
 namespace Api.Services;
@@ -44,7 +45,7 @@ public class OrderService(
         }
         catch (Exception)
         {
-            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.ShippingRequestFail);
             throw;
         }
     }
@@ -55,29 +56,21 @@ public class OrderService(
 
         var orderId = await orderRepository.CreateOrder(request);
 
-        try
-        {
-            await paymentProxy.ProcessPayment(request.UserId, request.PaymentMethod, totalAmount);
-            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentSucceeded);
-        }
-        catch (Exception)
+        var paymentResult = await paymentProxy.ProcessPaymentResult(orderId, request.PaymentMethod, totalAmount);
+        if (!paymentResult.IsSuccess)
         {
             orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
-            // throw e; // should not throw by this way to prevent stack trace missing
-            // if the exception has been thrown, no need to log here
-            throw;
+            throw new PlaceOrderException(PlaceOrderError.PaymentFail, paymentResult.ErrorMessage);
         }
+        orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentSucceeded);
 
-        try
+        var shippingResult =  await shippingService.ShipOrderResult(request.UserId, request.Address, request.Products);
+        if (!shippingResult.IsSuccess)
         {
-            await shippingService.ShipOrder(request.UserId, request.Address, request.Products);
-            orderRepository.UpdateOrderStatus(orderId, OrderStatus.Shipping);
+            orderRepository.UpdateOrderStatus(orderId, OrderStatus.ShippingRequestFail);
+            throw new PlaceOrderException(PlaceOrderError.ShippingNotAvailable, shippingResult.ErrorMessage);
         }
-        catch (Exception)
-        {
-            orderRepository.UpdateOrderStatus(orderId, OrderStatus.PaymentFailed);
-            throw;
-        }
+        orderRepository.UpdateOrderStatus(orderId, OrderStatus.Shipping);
     }
 }
 
