@@ -2,34 +2,33 @@ using Api.ActionFilters;
 using Api.Controllers;
 using Api.Repositories;
 using Api.Services;
+using Api.Interceptors;
 using Castle.DynamicProxy;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserApiExceptionFilterAttribute>();
 
-// Register repositories
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserPaymentTransactionRepository, UserPaymentTransactionRepository>();
 
-// Register services
-builder.Services.AddScoped<IUserService, UserService>();
+// Register the interceptor
+builder.Services.AddSingleton<IInterceptor, RetryInterceptor>();
 
-// Register the proxy generator
-// builder.Services.AddSingleton<ProxyGenerator>();
+// Register UserService with interceptor
+builder.Services.AddScoped(serviceProvider =>
+{
+    var proxyGenerator = new ProxyGenerator();
+    var userProfileRepo = serviceProvider.GetRequiredService<IUserProfileRepository>();
+    var paymentTransactionRepo = serviceProvider.GetRequiredService<IUserPaymentTransactionRepository>();
+    var logger = serviceProvider.GetRequiredService<ILogger<UserService>>();
+    var interceptor = serviceProvider.GetRequiredService<IInterceptor>();
 
-// Register the service with interception
-// builder.Services.AddScoped<IUserService>(provider =>
-// {
-//     var proxyGenerator = provider.GetRequiredService<ProxyGenerator>();
-//     var interceptor = provider.GetRequiredService<IAsyncInterceptor>();
-//     var logger = provider.GetRequiredService<ILogger<UserService>>();
-//     
-//     var target = new UserService(logger);
-//     return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(target, interceptor);
-// });
+    var target = new UserService(userProfileRepo, paymentTransactionRepo, logger);
+    return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(target, interceptor);
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<GlobalErrorHandler>();

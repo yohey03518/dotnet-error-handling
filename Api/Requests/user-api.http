@@ -1,0 +1,14 @@
+### Variables
+@baseUrl = http://localhost:5033
+
+### Get User by ID
+GET {{baseUrl}}/api/user/1
+Accept: application/json
+
+### Get User by ID with Default
+GET {{baseUrl}}/api/user/default/1
+Accept: application/json
+
+### Get User by ID with Retry
+GET {{baseUrl}}/api/user/retry/1
+Accept: application/json

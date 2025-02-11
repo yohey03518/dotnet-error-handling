@@ -16,6 +16,22 @@ public class UserController(IUserService userService) : ControllerBase
 
         return BaseResponse<UserResponse>.Success(response);
     }
+    
+    [HttpGet("default/{id}")]
+    public async Task<BaseResponse> GetUserById2(int id)
+    {
+        var response = await userService.GetByIdWithDefault(id);
+
+        return BaseResponse<UserResponse>.Success(response);
+    }
+    
+    [HttpGet("retry/{id}")]
+    public async Task<BaseResponse> GetByIdWithRetry(int id)
+    {
+        var response = await userService.GetByIdWithRetry(id);
+
+        return BaseResponse<UserResponse>.Success(response);
+    }
 
     // [HttpPost]
     // public async Task<ActionResult<BaseResponse>> CreateUser([FromBody] CreateUserRequest request)

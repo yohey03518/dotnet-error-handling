@@ -1,29 +1,26 @@
 # dotnet-error-handling
 Examples of error handling patterns in .NET applications
 
-## Error Handling Layers
-
-### Global Level
+## Global Level
 - Uses **Middleware** for application-wide error handling
-- Provides consistent error responses
 - Centralizes unhandled exceptions logging
+- Handle different types of exceptions with different actions
 
-### API Level
-#### Controller-based API
+## Service Level
+- Handles business logic exceptions
+- **Decorators** 
+- **Interceptors**
+- **Result Pattern** 
+
+### Controller Level
 - Uses **Action Filters**/**Exception Filters**
 - Validates requests and model state
+- Other custom exception
 
-#### Minimal API
+### Minimal API
 - Uses **EndpointFilters** for error handling
 - Handles errors with **IExceptionHandler**
 - Supports custom error handling per endpoint
-
-### Service Level
-- Uses **Interceptors** or **Decorators**
-- Handles business logic exceptions
-- Implements custom domain exceptions
-- Validates business rules
-- Uses **Result Pattern** for error handling
 
 ### External Communication
 - Uses **HttpMessageHandler** to handle HTTP client errors

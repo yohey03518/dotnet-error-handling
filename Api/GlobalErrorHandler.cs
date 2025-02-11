@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Api;
+using Microsoft.Data.SqlClient;
 
 public class GlobalErrorHandler(RequestDelegate next, ILogger<GlobalErrorHandler> logger)
 {
@@ -9,6 +10,11 @@ public class GlobalErrorHandler(RequestDelegate next, ILogger<GlobalErrorHandler
         try
         {
             await next(context);
+        }
+        catch (SqlException ex)
+        {
+            logger.LogCritical(ex, "DB Error");
+            // inform support team or switch to UM...
         }
         catch (Exception ex)
         {
