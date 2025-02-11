@@ -17,16 +17,12 @@ Examples of error handling patterns in .NET applications
 - Validates requests and model state
 - Other custom exception
 
-### Minimal API
+### Minimal API (Not Implemented)
 - Uses **EndpointFilters** for error handling
 - Handles errors with **IExceptionHandler**
-- Supports custom error handling per endpoint
 
 ### External Communication
-- Uses **HttpMessageHandler** to handle HTTP client errors
-- Implements resilience patterns
-  - Library: **Polly** for retries, circuit breaker, timeout
-- Handles distributed system failures
+- Uses **DelegatingHandler** to handle HTTP client errors
 
 ### gRPC Communication
 - Uses **Interceptors** for error handling

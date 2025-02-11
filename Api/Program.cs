@@ -1,5 +1,6 @@
 using Api.ActionFilters;
 using Api.Controllers;
+using Api.Handlers;
 using Api.Repositories;
 using Api.Services;
 using Api.Interceptors;
@@ -13,8 +14,11 @@ builder.Services.AddScoped<ModelValidationFilterAttribute>();
 builder.Services.AddScoped<ValidationFailFilterAttribute>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IPaymentProxy, PaymentProxy>();
 builder.Services.AddScoped<IShippingService, ShippingService>();
+
+builder.Services.AddSingleton<RetryHandler>();
+builder.Services.AddHttpClient<IPaymentProxy, PaymentProxy>()
+    .ConfigurePrimaryHttpMessageHandler<RetryHandler>();
 
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserPaymentTransactionRepository, UserPaymentTransactionRepository>();

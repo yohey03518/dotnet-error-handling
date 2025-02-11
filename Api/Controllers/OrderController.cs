@@ -45,7 +45,7 @@ public class OrderController(OrderService orderService) : ControllerBase
         return BaseResponse.Success();
     }
     
-    [HttpPost("fail-handle")]
+    [HttpPost("result-pattern")]
     public async Task<BaseResponse> PlaceOrderFailHandleResultPattern([FromBody] PlaceOrderRequest request)
     {
         await orderService.PlaceOrderWithFailHandleResultPattern(request);
@@ -63,7 +63,7 @@ public enum PlaceOrderError
 
 public class PlaceOrderException(PlaceOrderError errorType, string message) : Exception(message)
 {
-    private readonly PlaceOrderError _errorType = errorType;
+    public readonly PlaceOrderError ErrorType = errorType;
 }
 
 public class ProductRequest

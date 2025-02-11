@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -8,29 +9,28 @@ public class PlaceOrderExceptionFilterAttribute(ILogger<PlaceOrderExceptionFilte
 {
     public override void OnException(ExceptionContext context)
     {
-        logger.LogError(context.Exception, "An error occurred in UserController");
+        logger.LogError(context.Exception, "An error occurred during place order");
 
-        var response = new BaseResponse
+        if (context.Exception is PlaceOrderException exception)
         {
-            IsSuccess = false,
-            Message = context.Exception switch
+            context.Result = new ObjectResult(new BaseResponse
             {
-                ArgumentException => "Invalid input provided",
-                KeyNotFoundException => "Requested resource not found",
-                _ => "An unexpected error occurred"
-            }
-        };
-
-        context.Result = new ObjectResult(response)
-        {
-            StatusCode = context.Exception switch
+                IsSuccess = false,
+                Message = exception.ErrorType switch
+                {
+                    PlaceOrderError.PaymentFail => "Payment failed",
+                    PlaceOrderError.ProductSoldOut => "Product is sold out",
+                    PlaceOrderError.ShippingNotAvailable => "Shipping is not available",
+                    _ => "An unexpected error occurred while placing the order"
+                }
+            })
             {
-                ArgumentException => (int)HttpStatusCode.BadRequest,
-                KeyNotFoundException => (int)HttpStatusCode.NotFound,
-                _ => (int)HttpStatusCode.InternalServerError
-            }
-        };
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
 
-        context.ExceptionHandled = true;
+            context.ExceptionHandled = true;
+        }
+
+        base.OnException(context);
     }
 }

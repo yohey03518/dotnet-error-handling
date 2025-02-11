@@ -38,9 +38,6 @@ public class UserService(
     public async Task<UserResponse> GetByIdWithRetry(int id)
     {
         throw new Exception("123");
-        var userProfile = await userProfileRepository.GetById(id);
-        var paymentTransactions = await paymentTransactionRepository.GetByUserId(id);
-        return new UserResponse(userProfile, paymentTransactions);
     } 
 
     // public async Task<UserResponse> Create(CreateUserRequest request)

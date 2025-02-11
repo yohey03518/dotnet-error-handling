@@ -1,5 +1,4 @@
-﻿using Api.Common;
-using Api.Controllers;
+﻿using Api.Controllers;
 using Api.Repositories;
 
 namespace Api.Services;
@@ -7,8 +6,7 @@ namespace Api.Services;
 public class OrderService(
     IOrderRepository orderRepository,
     IPaymentProxy paymentProxy,
-    IShippingService shippingService,
-    ILogger<OrderService> logger)
+    IShippingService shippingService)
 {
     public async Task PlaceOrder(PlaceOrderRequest request)
     {

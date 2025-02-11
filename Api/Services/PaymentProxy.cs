@@ -3,7 +3,7 @@ using Api.Controllers;
 
 namespace Api.Services;
 
-public class PaymentProxy : IPaymentProxy
+public class PaymentProxy(HttpClient httpClient) : IPaymentProxy
 {
     public Task ProcessPayment(int userId, string paymentMethod, decimal totalAmount)
     {
