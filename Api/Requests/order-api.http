@@ -30,7 +30,7 @@ Content-Type: application/json
 {
     "userId": 1,
     "paymentMethod": "Credit Card",
-    "address": "123 M 21212121St",
+    "address": "123121St",
     "products": [
         {
             "id": 1,
