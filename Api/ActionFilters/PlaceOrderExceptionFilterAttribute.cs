@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using Api.Controllers;
+using Common.Domain;
+using Common.Execeptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

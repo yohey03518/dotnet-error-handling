@@ -1,5 +1,7 @@
 ﻿using Api.Controllers;
 using Api.Repositories;
+using Common.Domain;
+using Common.Execeptions;
 
 namespace Api.Services;
 

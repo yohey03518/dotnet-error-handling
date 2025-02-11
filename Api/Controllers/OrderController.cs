@@ -53,19 +53,6 @@ public class OrderController(OrderService orderService) : ControllerBase
     }
 }
 
-public enum PlaceOrderError
-{
-    Unknown = 0,
-    PaymentFail = 1,
-    ProductSoldOut = 2,
-    ShippingNotAvailable = 3
-}
-
-public class PlaceOrderException(PlaceOrderError errorType, string message) : Exception(message)
-{
-    public readonly PlaceOrderError ErrorType = errorType;
-}
-
 public class ProductRequest
 {
     public int Id { get; set; }

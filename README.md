@@ -29,3 +29,4 @@ Examples of error handling patterns in .NET applications
   - Server-side
   - Client-side
 - Converts exceptions to gRPC **Status Codes**
+- Use Metadata to transfer more error information
