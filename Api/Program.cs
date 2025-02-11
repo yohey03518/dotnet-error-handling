@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserApiExceptionFilterAttribute>();
+builder.Services.AddScoped<ModelValidationActionFilter>();
 
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IUserPaymentTransactionRepository, UserPaymentTransactionRepository>();

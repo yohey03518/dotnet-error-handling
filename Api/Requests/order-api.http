@@ -1,0 +1,46 @@
+### Variables
+@baseUrl = http://localhost:5033
+
+### Place Order
+POST {{baseUrl}}/api/order
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "paymentMethod": "Credit Card",
+    "address": "123 M St",
+    "products": [
+        {
+            "id": 1,
+            "amount": 2,
+            "price": 29.99
+        },
+        {
+            "id": 2,
+            "amount": 1,
+            "price": 49.99
+        }
+    ]
+} 
+
+### Validation in Action filter
+POST {{baseUrl}}/api/order/action-filter
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "paymentMethod": "Credit Card",
+    "address": "123 M 21212121St",
+    "products": [
+        {
+            "id": 1,
+            "amount": 2,
+            "price": 29.99
+        },
+        {
+            "id": 2,
+            "amount": 1,
+            "price": 49.99
+        }
+    ]
+} 

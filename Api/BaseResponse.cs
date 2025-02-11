@@ -13,6 +13,15 @@ public class BaseResponse
             Message = message
         };
     }
+
+    public static BaseResponse ValidateFail(string errorMessage)
+    {
+        return new BaseResponse
+        {
+            IsSuccess = false,
+            Message = errorMessage
+        };
+    }
 }
 
 public class BaseResponse<T> : BaseResponse
